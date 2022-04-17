@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.Data", "..\DotaWin.Data\DotaWin.Data.csproj", "{5B3749DC-D1E6-4016-AAF0-358959853683}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.Data", "DotaWin.Data\DotaWin.Data.csproj", "{5B3749DC-D1E6-4016-AAF0-358959853683}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.Updater", "..\DotaWin.Updater\DotaWin.Updater.csproj", "{598D964C-619A-4290-9DB1-26C1DC6C696C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.Updater", "DotaWin.Updater\DotaWin.Updater.csproj", "{598D964C-619A-4290-9DB1-26C1DC6C696C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.Web", "..\DotaWin.Web\DotaWin.Web.csproj", "{119739AE-0B2B-422A-9478-1E343EDCEF98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.Web", "DotaWin.Web\DotaWin.Web.csproj", "{119739AE-0B2B-422A-9478-1E343EDCEF98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
