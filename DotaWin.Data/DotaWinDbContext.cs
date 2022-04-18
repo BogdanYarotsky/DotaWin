@@ -11,9 +11,10 @@ namespace DotaWin.Data
         public DbSet<Item> Items { get; set; }
         public DbSet<HeroItem> HeroItems { get; set; }
 
-        // to change
+        // sets connection string
+        // https://www.npgsql.org/efcore/
+        // https://www.npgsql.org/doc/connection-string-parameters.html
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=my_host;Database=my_db;Username=my_user;Password=my_pw");
-
+            => optionsBuilder.UseNpgsql("Host=localhost;Database=DotaWin;Username=postgres;Password=password1337");
     }
 }

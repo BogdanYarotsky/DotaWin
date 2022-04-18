@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DotaWin.Data\DotaWin.Data.csproj" />
+  </ItemGroup>
+
 </Project>
