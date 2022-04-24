@@ -20,8 +20,7 @@ namespace DotaWin.Data.Models
         public int Price { get; set; }
 
         // Foreign Keys
-        public int UpdateId { get; set; }
-        public Update Update { get; set; }
+        public List<Update> Updates { get; set; } = new List<Update>();
         public List<HeroItem> HeroItems { get; set; } = new List<HeroItem>();
 
     }

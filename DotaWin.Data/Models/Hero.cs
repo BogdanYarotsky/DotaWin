@@ -15,8 +15,7 @@ namespace DotaWin.Data.Models
         public double Winrate { get; set; }
 
         // Foreign Keys
-        public int UpdateId { get; set; }
-        public Update Update { get; set; }
+        public List<Update> Updates { get; set; }
         public List<HeroItem> HeroItems { get; set; } = new List<HeroItem>();    
     }
 }

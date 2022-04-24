@@ -16,7 +16,7 @@ namespace DotaWin.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Success = table.Column<bool>(type: "boolean", nullable: false),
                     Patch = table.Column<string>(type: "text", nullable: false)
                 },
