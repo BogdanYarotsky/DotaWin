@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DotaWin.Data.Migrations
 {
     [DbContext(typeof(DotaWinDbContext))]
-    [Migration("20220418110736_Init")]
+    [Migration("20220426063038_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,24 +33,17 @@ namespace DotaWin.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImgUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("UpdateId")
-                        .HasColumnType("integer");
 
                     b.Property<double>("Winrate")
                         .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UpdateId");
-
-                    b.ToTable("Heroes");
+                    b.ToTable("Hero");
                 });
 
             modelBuilder.Entity("DotaWin.Data.Models.HeroItem", b =>
@@ -84,7 +77,7 @@ namespace DotaWin.Data.Migrations
 
                     b.HasIndex("UpdateId");
 
-                    b.ToTable("HeroItems");
+                    b.ToTable("HeroItem");
                 });
 
             modelBuilder.Entity("DotaWin.Data.Models.Item", b =>
@@ -96,27 +89,20 @@ namespace DotaWin.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImgUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UpdateId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UpdateId");
-
-                    b.ToTable("Items");
+                    b.ToTable("Item");
                 });
 
             modelBuilder.Entity("DotaWin.Data.Models.Update", b =>
@@ -131,26 +117,41 @@ namespace DotaWin.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Patch")
-                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("Success")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Updates");
+                    b.ToTable("DailyUpdates");
                 });
 
-            modelBuilder.Entity("DotaWin.Data.Models.Hero", b =>
+            modelBuilder.Entity("HeroUpdate", b =>
                 {
-                    b.HasOne("DotaWin.Data.Models.Update", "Update")
-                        .WithMany("Heroes")
-                        .HasForeignKey("UpdateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("HeroesId")
+                        .HasColumnType("integer");
 
-                    b.Navigation("Update");
+                    b.Property<int>("UpdatesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("HeroesId", "UpdatesId");
+
+                    b.HasIndex("UpdatesId");
+
+                    b.ToTable("HeroUpdate");
+                });
+
+            modelBuilder.Entity("ItemUpdate", b =>
+                {
+                    b.Property<int>("ItemsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UpdatesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ItemsId", "UpdatesId");
+
+                    b.HasIndex("UpdatesId");
+
+                    b.ToTable("ItemUpdate");
                 });
 
             modelBuilder.Entity("DotaWin.Data.Models.HeroItem", b =>
@@ -180,15 +181,34 @@ namespace DotaWin.Data.Migrations
                     b.Navigation("Update");
                 });
 
-            modelBuilder.Entity("DotaWin.Data.Models.Item", b =>
+            modelBuilder.Entity("HeroUpdate", b =>
                 {
-                    b.HasOne("DotaWin.Data.Models.Update", "Update")
-                        .WithMany("Items")
-                        .HasForeignKey("UpdateId")
+                    b.HasOne("DotaWin.Data.Models.Hero", null)
+                        .WithMany()
+                        .HasForeignKey("HeroesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Update");
+                    b.HasOne("DotaWin.Data.Models.Update", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ItemUpdate", b =>
+                {
+                    b.HasOne("DotaWin.Data.Models.Item", null)
+                        .WithMany()
+                        .HasForeignKey("ItemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DotaWin.Data.Models.Update", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DotaWin.Data.Models.Hero", b =>
@@ -204,10 +224,6 @@ namespace DotaWin.Data.Migrations
             modelBuilder.Entity("DotaWin.Data.Models.Update", b =>
                 {
                     b.Navigation("HeroItems");
-
-                    b.Navigation("Heroes");
-
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
