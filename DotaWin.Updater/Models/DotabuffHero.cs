@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DotaWin.Updater.Models
 {
-    internal class DotabuffHero
+    public class DotabuffHero
     {
         public string HeroName { get; set; }
         public double Winrate { get; set; }

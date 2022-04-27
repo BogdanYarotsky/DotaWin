@@ -4,5 +4,6 @@ using DotaWin.Updater.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Playwright;
 
-Console.WriteLine();
 
+await using var crawler = await DotabuffCrawler.CreateAsync();
+Console.WriteLine(await crawler.GetPatchAsync());

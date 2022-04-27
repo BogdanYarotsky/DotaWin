@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using DotaWin.Updater.Utilities;
 using System.Linq;
@@ -25,5 +25,7 @@ namespace DotaWin.Test
             Assert.AreEqual(200, heroesList.status);
             Assert.IsTrue(heroesList.heroes.Count() > 5);
         }
+
+
     }
 }

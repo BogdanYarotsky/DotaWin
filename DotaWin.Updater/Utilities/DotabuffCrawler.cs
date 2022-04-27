@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DotaWin.Updater.Utilities
 {
-    internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
+    public sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
     {
         private IPlaywright _playwright;
         private IBrowser _browser;
@@ -45,8 +45,17 @@ namespace DotaWin.Updater.Utilities
             return await crawler.StartBrowserAsync();
         }
 
-        public void Dispose() => _playwright.Dispose();
-        public ValueTask DisposeAsync() => _browser.DisposeAsync();
+        public async ValueTask DisposeAsync()
+        {
+           await _browser.DisposeAsync();
+           _playwright.Dispose();
+        }
+
+        public void Dispose()
+        {
+            _browser.DisposeAsync().GetAwaiter().GetResult();
+            _playwright.Dispose();
+        }
     }
 }
 
