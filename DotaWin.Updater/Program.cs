@@ -4,10 +4,5 @@ using DotaWin.Updater.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Playwright;
 
+Console.WriteLine();
 
-var heroesList = await DotaAPI.GetHeroes();
-Console.WriteLine(heroesList.count);
-foreach (var hero in heroesList.heroes)
-{
-    Console.WriteLine(hero.localized_name);
-}

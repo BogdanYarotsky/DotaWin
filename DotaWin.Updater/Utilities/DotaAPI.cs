@@ -8,19 +8,31 @@ using System.Text.Json;
 
 namespace DotaWin.Updater.Utilities
 {
-    public static class DotaAPI
+    public class DotaAPI
     {
-        private static readonly HttpClient client = new();
-        public static async Task<DotaHeroesResult> GetHeroes()
+        private static readonly HttpClient _client = new();
+        private readonly string _apiKey;
+        public DotaAPI(string apiKey)
         {
-            var jsonString = await client.GetStringAsync("https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v1/?format=JSON&language=en_us&key=B479F4855E8EC7C228DF9045FA77978B");
+            _apiKey = apiKey;
+        }
+        public async Task<DotaHeroesResult> GetHeroes()
+        {
+            var url = GetAPILink("GetHeroes");
+            var jsonString = await _client.GetStringAsync(url);
             var obj = JsonSerializer.Deserialize<DotaHeroesList>(jsonString);
             return obj.result;
         }
 
-        internal static async Task<DotaItemsResult> GetItems()
+        public async Task<DotaItemsResult> GetItems()
         {
-            throw new NotImplementedException();
+            var url = GetAPILink("GetGameItems");
+            var jsonString = await _client.GetStringAsync(url);
+            var obj = JsonSerializer.Deserialize<DotaItemsList>(jsonString);
+            return obj.result;
         }
+
+        private string GetAPILink(string query) 
+            => $"https://api.steampowered.com/IEconDOTA2_570/{query}/v1/?format=JSON&language=en_us&key={_apiKey}";
     }
 }

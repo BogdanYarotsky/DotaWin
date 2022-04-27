@@ -24,4 +24,5 @@ namespace DotaWin.Updater.Models
         public int id { get; set; }
         public string localized_name { get; set; }
     }
+
 }
