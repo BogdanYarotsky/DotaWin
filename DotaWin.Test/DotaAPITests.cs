@@ -13,7 +13,7 @@ namespace DotaWin.Test
         [TestMethod]
         public async Task TestItemsFetch()
         {
-            var itemList = await dotaAPI.GetItems();
+            var itemList = await dotaAPI.GetItemsAsync();
             Assert.AreEqual(200, itemList.status);
             Assert.IsTrue(itemList.items.Count() > 5);
         }
@@ -21,7 +21,7 @@ namespace DotaWin.Test
         [TestMethod]
         public async Task TestHeroesFetch()
         {
-            var heroesList = await dotaAPI.GetHeroes();
+            var heroesList = await dotaAPI.GetHeroesAsync();
             Assert.AreEqual(200, heroesList.status);
             Assert.IsTrue(heroesList.heroes.Count() > 5);
         }

@@ -11,10 +11,9 @@ namespace DotaWin.Test
     public class DotabuffCrawlerTests : IAsyncDisposable
     {
         private DotabuffCrawler crawler;
-        public async ValueTask DisposeAsync() => await crawler.DisposeAsync();
 
         [TestInitialize]
-        public async Task InitCrawler() => crawler = await DotabuffCrawler.CreateAsync();
+        public async Task InitCrawlerAsync() => crawler = await DotabuffCrawler.CreateAsync();
 
         [TestMethod]
         public async Task TestPatchVersion()
@@ -24,5 +23,6 @@ namespace DotaWin.Test
             Console.WriteLine(withoutLetters);
             Assert.IsTrue(double.TryParse(withoutLetters, out var _));
         }
+        public async ValueTask DisposeAsync() => await crawler.DisposeAsync();
     }
 }

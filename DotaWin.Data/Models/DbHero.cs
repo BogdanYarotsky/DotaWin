@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DotaWin.Data.Models
 {
-    public class Hero
+    public class DbHero
     {
         // Data
         public int Id { get; set; }
@@ -14,7 +14,7 @@ namespace DotaWin.Data.Models
         public string ImgUrl { get; set; } 
         public double Winrate { get; set; }
         // Relationships
-        public ICollection<Update> Updates { get; set; }
-        public ICollection<HeroItem> HeroItems { get; set; }   
+        public ICollection<DbUpdate> Updates { get; set; }
+        public ICollection<DbHeroItem> HeroItems { get; set; }   
     }
 }

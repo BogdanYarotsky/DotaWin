@@ -16,7 +16,7 @@ namespace DotaWin.Updater.Utilities
         {
             _apiKey = apiKey;
         }
-        public async Task<DotaHeroesResult> GetHeroes()
+        public async Task<DotaHeroesResult> GetHeroesAsync()
         {
             var url = GetAPILink("GetHeroes");
             var jsonString = await _client.GetStringAsync(url);
@@ -24,7 +24,7 @@ namespace DotaWin.Updater.Utilities
             return obj.result;
         }
 
-        public async Task<DotaItemsResult> GetItems()
+        public async Task<DotaItemsResult> GetItemsAsync()
         {
             var url = GetAPILink("GetGameItems");
             var jsonString = await _client.GetStringAsync(url);

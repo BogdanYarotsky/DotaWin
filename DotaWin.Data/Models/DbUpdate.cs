@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DotaWin.Data.Models
 {
-    public class Update
+    public class DbUpdate
     {
         // Data
         public int Id { get; set; }
@@ -14,9 +14,9 @@ namespace DotaWin.Data.Models
         public string Patch { get; set; } = string.Empty;
 
         // Relationships
-        public ICollection<Hero> Heroes { get; set; } // 130 heroes      
-        public ICollection<Item> Items { get; set; } // 150 items
-        public ICollection<HeroItem> HeroItems { get; set; } // 130*150 HeroItems
+        public ICollection<DbHero> Heroes { get; set; } // 130 heroes      
+        public ICollection<DbItem> Items { get; set; } // 150 items
+        public ICollection<DbHeroItem> HeroItems { get; set; } // 130*150 HeroItems
 
     }
 }

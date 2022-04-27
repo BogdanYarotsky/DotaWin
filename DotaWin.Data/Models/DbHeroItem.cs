@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DotaWin.Data.Models
 {
-    public class HeroItem
+    public class DbHeroItem
     {
         // Data
         public int Id { get; set; }
@@ -15,15 +15,15 @@ namespace DotaWin.Data.Models
 
         // Foreign Key
         public int HeroId { get; set; }
-        public Hero Hero{ get; set; }
+        public DbHero Hero{ get; set; }
 
         // Foreign Key
         public int ItemId{ get; set; }
-        public Item Item{ get; set; }
+        public DbItem Item{ get; set; }
 
         // Foreign Key
         public int UpdateId { get; set; }
-        public Update Update { get; set; }
+        public DbUpdate Update { get; set; }
 
     }
 }
