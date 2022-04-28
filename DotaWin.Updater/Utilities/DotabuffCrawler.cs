@@ -14,6 +14,9 @@ namespace DotaWin.Updater.Utilities
         private const string patchSelector = "#dota_react_root > div > div > div.patchnotespage_Header_2uAz0 > div.patchnotespage_NotesTitle_oyfUT";
         private const string cookiesBtnSelector = "body > div.fc-consent-root > div.fc-dialog-container > div.fc-dialog.fc-choice-dialog > div.fc-footer-buttons-container > div.fc-footer-buttons > button.fc-button.fc-cta-consent.fc-primary-button";
         private const string heroesListSelector = "body > div.container-outer.seemsgood > div.skin-container > div.container-inner.container-inner-content > div.content-inner > section:nth-child(3) > footer > div > a";
+        private const string heroItemsListSelector = "body > div.container-outer.seemsgood > div.skin-container > div.container-inner.container-inner-content > div.content-inner > section > article > table > tbody > tr";
+        private const string heroWinrateSelector = "body > div.container-outer.seemsgood > div.skin-container > div.container-inner.container-inner-content > div.header-content-container > div.header-content > div.header-content-secondary > dl:nth-child(2) > dd > span";
+
         private readonly BrowserTypeLaunchPersistentContextOptions _options = new BrowserTypeLaunchPersistentContextOptions { Headless = false };
         private IPlaywright _playwright;
         private IBrowserContext _browser;
@@ -36,31 +39,28 @@ namespace DotaWin.Updater.Utilities
         public async Task<List<DotabuffHero>> GetHeroesAsync()
         {
             await _page.GotoAsync("https://www.dotabuff.com/heroes");
-            // var btn = _page.Locator(cookiesBtnSelector);
-            // await btn.WaitForAsync(new LocatorWaitForOptions { Timeout = 15000 });
-            // await btn.ClickAsync();
             var heroIcons = _page.Locator(heroesListSelector);
-            //await heroIcons.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
             var totalHeroes = await heroIcons.CountAsync();
 
             // get links of every hero
             var heroUrl = new UriBuilder("https", "www.dotabuff.com");
             var urls = new List<Uri>();
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < 1; i++)
             {
                 var href = await heroIcons.Nth(i).GetAttributeAsync("href");
                 heroUrl.Path = href + "/items";
                 urls.Add(heroUrl.Uri);
             }
 
+            // all info goes here
             var bag = new ConcurrentBag<DotabuffHero>();
             var tasks = urls.Select(async url =>
             {
                 var heroTask = await ExtractDotabuffHeroInfo(url);
                 bag.Add(heroTask);
             });
-            await Task.WhenAll(tasks);
 
+            await Task.WhenAll(tasks);
             return bag.ToList();
         }
 
@@ -74,7 +74,33 @@ namespace DotaWin.Updater.Utilities
             });
             await page.GotoAsync(heroUrl.ToString(), new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded});
             var name = await page.Locator("h1").InnerTextAsync();
-            return new DotabuffHero { HeroName = name.Replace("Items", "").Trim() };
+
+            // get winrate
+            var winrate = await page.Locator(heroWinrateSelector).InnerTextAsync();
+            winrate = winrate.Replace("%", "").Trim();
+            // get items
+
+            var items = new List<DotabuffItem>();
+            var heroList = page.Locator(heroItemsListSelector);
+            var itemCount = await heroList.CountAsync();
+            for (int i = 0; i < itemCount; i++)
+            {
+                var row = heroList.Nth(i);
+                var columns = row.Locator("td");
+                var itemName = columns.Nth(2);
+                var matches = columns.Nth(3);
+                var wr = columns.Nth(4);
+                items.Add(new DotabuffItem
+                {
+                    Name = await itemName.InnerTextAsync(),
+                    Winrate = double.Parse(await wr.GetAttributeAsync("data-value")),
+                    Matches = int.Parse(await wr.GetAttributeAsync("data-value"))
+                });
+                Console.WriteLine(items[i].Name);
+            }
+
+            await page.CloseAsync();
+            return new DotabuffHero { HeroName = name.Replace("Items", "").Trim(), Winrate = double.Parse(winrate), Items = items };
         }
 
         public static async Task<DotabuffCrawler> CreateAsync()
