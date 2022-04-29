@@ -22,7 +22,37 @@ namespace DotaWin.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("DotaWin.Data.Models.Hero", b =>
+            modelBuilder.Entity("DbHeroDbUpdate", b =>
+                {
+                    b.Property<int>("HeroesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UpdatesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("HeroesId", "UpdatesId");
+
+                    b.HasIndex("UpdatesId");
+
+                    b.ToTable("DbHeroDbUpdate");
+                });
+
+            modelBuilder.Entity("DbItemDbUpdate", b =>
+                {
+                    b.Property<int>("ItemsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UpdatesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ItemsId", "UpdatesId");
+
+                    b.HasIndex("UpdatesId");
+
+                    b.ToTable("DbItemDbUpdate");
+                });
+
+            modelBuilder.Entity("DotaWin.Data.Models.DbHero", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,10 +71,10 @@ namespace DotaWin.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hero");
+                    b.ToTable("Heroes");
                 });
 
-            modelBuilder.Entity("DotaWin.Data.Models.HeroItem", b =>
+            modelBuilder.Entity("DotaWin.Data.Models.DbHeroItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -75,10 +105,10 @@ namespace DotaWin.Data.Migrations
 
                     b.HasIndex("UpdateId");
 
-                    b.ToTable("HeroItem");
+                    b.ToTable("HeroItems");
                 });
 
-            modelBuilder.Entity("DotaWin.Data.Models.Item", b =>
+            modelBuilder.Entity("DotaWin.Data.Models.DbItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,10 +130,10 @@ namespace DotaWin.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Item");
+                    b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("DotaWin.Data.Models.Update", b =>
+            modelBuilder.Entity("DotaWin.Data.Models.DbUpdate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,51 +152,51 @@ namespace DotaWin.Data.Migrations
                     b.ToTable("DailyUpdates");
                 });
 
-            modelBuilder.Entity("HeroUpdate", b =>
+            modelBuilder.Entity("DbHeroDbUpdate", b =>
                 {
-                    b.Property<int>("HeroesId")
-                        .HasColumnType("integer");
+                    b.HasOne("DotaWin.Data.Models.DbHero", null)
+                        .WithMany()
+                        .HasForeignKey("HeroesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("UpdatesId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("HeroesId", "UpdatesId");
-
-                    b.HasIndex("UpdatesId");
-
-                    b.ToTable("HeroUpdate");
+                    b.HasOne("DotaWin.Data.Models.DbUpdate", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("ItemUpdate", b =>
+            modelBuilder.Entity("DbItemDbUpdate", b =>
                 {
-                    b.Property<int>("ItemsId")
-                        .HasColumnType("integer");
+                    b.HasOne("DotaWin.Data.Models.DbItem", null)
+                        .WithMany()
+                        .HasForeignKey("ItemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("UpdatesId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ItemsId", "UpdatesId");
-
-                    b.HasIndex("UpdatesId");
-
-                    b.ToTable("ItemUpdate");
+                    b.HasOne("DotaWin.Data.Models.DbUpdate", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("DotaWin.Data.Models.HeroItem", b =>
+            modelBuilder.Entity("DotaWin.Data.Models.DbHeroItem", b =>
                 {
-                    b.HasOne("DotaWin.Data.Models.Hero", "Hero")
+                    b.HasOne("DotaWin.Data.Models.DbHero", "Hero")
                         .WithMany("HeroItems")
                         .HasForeignKey("HeroId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DotaWin.Data.Models.Item", "Item")
+                    b.HasOne("DotaWin.Data.Models.DbItem", "Item")
                         .WithMany("HeroItems")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DotaWin.Data.Models.Update", "Update")
+                    b.HasOne("DotaWin.Data.Models.DbUpdate", "Update")
                         .WithMany("HeroItems")
                         .HasForeignKey("UpdateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -179,47 +209,17 @@ namespace DotaWin.Data.Migrations
                     b.Navigation("Update");
                 });
 
-            modelBuilder.Entity("HeroUpdate", b =>
-                {
-                    b.HasOne("DotaWin.Data.Models.Hero", null)
-                        .WithMany()
-                        .HasForeignKey("HeroesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DotaWin.Data.Models.Update", null)
-                        .WithMany()
-                        .HasForeignKey("UpdatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ItemUpdate", b =>
-                {
-                    b.HasOne("DotaWin.Data.Models.Item", null)
-                        .WithMany()
-                        .HasForeignKey("ItemsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DotaWin.Data.Models.Update", null)
-                        .WithMany()
-                        .HasForeignKey("UpdatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DotaWin.Data.Models.Hero", b =>
+            modelBuilder.Entity("DotaWin.Data.Models.DbHero", b =>
                 {
                     b.Navigation("HeroItems");
                 });
 
-            modelBuilder.Entity("DotaWin.Data.Models.Item", b =>
+            modelBuilder.Entity("DotaWin.Data.Models.DbItem", b =>
                 {
                     b.Navigation("HeroItems");
                 });
 
-            modelBuilder.Entity("DotaWin.Data.Models.Update", b =>
+            modelBuilder.Entity("DotaWin.Data.Models.DbUpdate", b =>
                 {
                     b.Navigation("HeroItems");
                 });

@@ -45,7 +45,7 @@ namespace DotaWin.Updater.Utilities
             // get links of every hero
             var heroUrl = new UriBuilder("https", "www.dotabuff.com");
             var urls = new List<Uri>();
-            for (var i = 0; i < 1; i++)
+            for (var i = 0; i < 14; i++)
             {
                 var href = await heroIcons.Nth(i).GetAttributeAsync("href");
                 heroUrl.Path = href + "/items";
@@ -54,13 +54,13 @@ namespace DotaWin.Updater.Utilities
 
             // all info goes here
             var bag = new ConcurrentBag<DotabuffHero>();
-            var tasks = urls.Select(async url =>
-            {
-                var heroTask = await ExtractDotabuffHeroInfo(url);
-                bag.Add(heroTask);
-            });
+            var tasks = urls.Select(url => ExtractDotabuffHeroInfo(url));
 
-            await Task.WhenAll(tasks);
+            foreach (var chunk in tasks.Chunk(5))
+            {
+                await Task.WhenAll(chunk);
+            }
+
             return bag.ToList();
         }
 
@@ -76,8 +76,8 @@ namespace DotaWin.Updater.Utilities
             var name = await page.Locator("h1").InnerTextAsync();
 
             // get winrate
-            var winrate = await page.Locator(heroWinrateSelector).InnerTextAsync();
-            winrate = winrate.Replace("%", "").Trim();
+            var heroWinrate = await page.Locator(heroWinrateSelector).InnerTextAsync();
+            heroWinrate = heroWinrate.Replace("%", "").Trim();
             // get items
 
             var items = new List<DotabuffItem>();
@@ -87,20 +87,21 @@ namespace DotaWin.Updater.Utilities
             {
                 var row = heroList.Nth(i);
                 var columns = row.Locator("td");
-                var itemName = columns.Nth(2);
-                var matches = columns.Nth(3);
-                var wr = columns.Nth(4);
+                var itemName = await columns.Nth(1).InnerTextAsync();
+                if (itemName.StartsWith("Recipe")) continue;
+                var matches = int.Parse(await columns.Nth(2).GetAttributeAsync("data-value"));
+                if (matches < 9001) continue; // sample is too small
+                var winrate = double.Parse(await columns.Nth(3).GetAttributeAsync("data-value"));
                 items.Add(new DotabuffItem
                 {
-                    Name = await itemName.InnerTextAsync(),
-                    Winrate = double.Parse(await wr.GetAttributeAsync("data-value")),
-                    Matches = int.Parse(await wr.GetAttributeAsync("data-value"))
+                    Name = itemName,
+                    Winrate = winrate,
+                    Matches = matches
                 });
-                Console.WriteLine(items[i].Name);
             }
 
             await page.CloseAsync();
-            return new DotabuffHero { HeroName = name.Replace("Items", "").Trim(), Winrate = double.Parse(winrate), Items = items };
+            return new DotabuffHero { HeroName = name.Replace("Items", "").Trim(), Winrate = double.Parse(heroWinrate), Items = items };
         }
 
         public static async Task<DotabuffCrawler> CreateAsync()

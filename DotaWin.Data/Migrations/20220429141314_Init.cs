@@ -25,7 +25,7 @@ namespace DotaWin.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Hero",
+                name: "Heroes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -36,11 +36,11 @@ namespace DotaWin.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hero", x => x.Id);
+                    table.PrimaryKey("PK_Heroes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Item",
+                name: "Items",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -52,11 +52,11 @@ namespace DotaWin.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Item", x => x.Id);
+                    table.PrimaryKey("PK_Items", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "HeroUpdate",
+                name: "DbHeroDbUpdate",
                 columns: table => new
                 {
                     HeroesId = table.Column<int>(type: "integer", nullable: false),
@@ -64,23 +64,47 @@ namespace DotaWin.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HeroUpdate", x => new { x.HeroesId, x.UpdatesId });
+                    table.PrimaryKey("PK_DbHeroDbUpdate", x => new { x.HeroesId, x.UpdatesId });
                     table.ForeignKey(
-                        name: "FK_HeroUpdate_DailyUpdates_UpdatesId",
+                        name: "FK_DbHeroDbUpdate_DailyUpdates_UpdatesId",
                         column: x => x.UpdatesId,
                         principalTable: "DailyUpdates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_HeroUpdate_Hero_HeroesId",
+                        name: "FK_DbHeroDbUpdate_Heroes_HeroesId",
                         column: x => x.HeroesId,
-                        principalTable: "Hero",
+                        principalTable: "Heroes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "HeroItem",
+                name: "DbItemDbUpdate",
+                columns: table => new
+                {
+                    ItemsId = table.Column<int>(type: "integer", nullable: false),
+                    UpdatesId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DbItemDbUpdate", x => new { x.ItemsId, x.UpdatesId });
+                    table.ForeignKey(
+                        name: "FK_DbItemDbUpdate_DailyUpdates_UpdatesId",
+                        column: x => x.UpdatesId,
+                        principalTable: "DailyUpdates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DbItemDbUpdate_Items_ItemsId",
+                        column: x => x.ItemsId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HeroItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -93,96 +117,72 @@ namespace DotaWin.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HeroItem", x => x.Id);
+                    table.PrimaryKey("PK_HeroItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HeroItem_DailyUpdates_UpdateId",
+                        name: "FK_HeroItems_DailyUpdates_UpdateId",
                         column: x => x.UpdateId,
                         principalTable: "DailyUpdates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_HeroItem_Hero_HeroId",
+                        name: "FK_HeroItems_Heroes_HeroId",
                         column: x => x.HeroId,
-                        principalTable: "Hero",
+                        principalTable: "Heroes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_HeroItem_Item_ItemId",
+                        name: "FK_HeroItems_Items_ItemId",
                         column: x => x.ItemId,
-                        principalTable: "Item",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ItemUpdate",
-                columns: table => new
-                {
-                    ItemsId = table.Column<int>(type: "integer", nullable: false),
-                    UpdatesId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ItemUpdate", x => new { x.ItemsId, x.UpdatesId });
-                    table.ForeignKey(
-                        name: "FK_ItemUpdate_DailyUpdates_UpdatesId",
-                        column: x => x.UpdatesId,
-                        principalTable: "DailyUpdates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ItemUpdate_Item_ItemsId",
-                        column: x => x.ItemsId,
-                        principalTable: "Item",
+                        principalTable: "Items",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_HeroItem_HeroId",
-                table: "HeroItem",
+                name: "IX_DbHeroDbUpdate_UpdatesId",
+                table: "DbHeroDbUpdate",
+                column: "UpdatesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DbItemDbUpdate_UpdatesId",
+                table: "DbItemDbUpdate",
+                column: "UpdatesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HeroItems_HeroId",
+                table: "HeroItems",
                 column: "HeroId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HeroItem_ItemId",
-                table: "HeroItem",
+                name: "IX_HeroItems_ItemId",
+                table: "HeroItems",
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HeroItem_UpdateId",
-                table: "HeroItem",
+                name: "IX_HeroItems_UpdateId",
+                table: "HeroItems",
                 column: "UpdateId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_HeroUpdate_UpdatesId",
-                table: "HeroUpdate",
-                column: "UpdatesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ItemUpdate_UpdatesId",
-                table: "ItemUpdate",
-                column: "UpdatesId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "HeroItem");
+                name: "DbHeroDbUpdate");
 
             migrationBuilder.DropTable(
-                name: "HeroUpdate");
+                name: "DbItemDbUpdate");
 
             migrationBuilder.DropTable(
-                name: "ItemUpdate");
-
-            migrationBuilder.DropTable(
-                name: "Hero");
+                name: "HeroItems");
 
             migrationBuilder.DropTable(
                 name: "DailyUpdates");
 
             migrationBuilder.DropTable(
-                name: "Item");
+                name: "Heroes");
+
+            migrationBuilder.DropTable(
+                name: "Items");
         }
     }
 }
