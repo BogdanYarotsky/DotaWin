@@ -1,40 +1,46 @@
 ﻿using ConsoleTables;
 using DotaWin.Data;
 using DotaWin.Data.Models;
-using DotaWin.Updater.Utilities;
+using DotaWin.Updater.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
-using var db = new DotaWinDbContext();
+var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+var dbOptionsBuilder = new DbContextOptionsBuilder();
+dbOptionsBuilder.UseNpgsql(config["ConnectionStrings:DefaultConnection"]);
+using var db = new DotaWinDbContext(dbOptionsBuilder.Options);
 
 // get all heroes in the db
 // find their HeroItems
 
-//var abbadon = await db.Heroes
-//    .AsNoTracking()
-//    .Where(h => h.Name == "Abaddon")
-//    .Include(h => h.HeroItems)
-//    .ThenInclude(hi => hi.Item)
-//    .Select(h => new
-//    {
-//        h.Name,
-//        h.Winrate,
-//        Items = h.HeroItems.Select(i => new
-//        {
-//            i.Item.Name,
-//            i.Item.ItemType,
-//            i.Item.Price,
-//            i.Matches,
-//            i.Winrate
-//        }),
-//    })
-//    .FirstAsync();
+var abbadon = await db.Heroes
+    .AsNoTracking()
+    .Where(h => h.Name == "Abaddon")
+    .Select(h => new
+    {
+        h.Name,
+        h.Winrate,
+        Items = h.HeroItems.Select(i => new
+        {
+            i.Item.Name,
+            i.Item.ItemType,
+            i.Item.Price,
+            i.Matches,
+            i.Winrate,
+            AddedWinrate = Math.Round(i.Winrate - h.Winrate, 2),
+        })
+    })
+    .FirstAsync();
 
-//Console.WriteLine("Hero: " + abbadon.Name);
-//Console.WriteLine("Winrate: " + abbadon.Winrate);
-//ConsoleTable.From(abbadon.Items).Write();
+Console.WriteLine("Hero: " + abbadon.Name);
+Console.WriteLine("Winrate: " + abbadon.Winrate);
+var items = abbadon.Items
+    .Where(i => i.Price > 500 && i.AddedWinrate > 0 && i.ItemType == DbItem.Type.Core)
+    .Select(i => new {i.Name, i.AddedWinrate, WinratePer1000Gold = Math.Round(i.AddedWinrate / i.Price * 1000, 2)});
+ConsoleTable.From(items).Write();
 
 
-//return;
+return;
 
 string[] boots = { "boots", "greaves", "treads" };
 var upd = new DbUpdate { Date = DateTime.UtcNow };
@@ -69,12 +75,12 @@ var dbItemsMap = itemsList.items.Where(i => i.recipe != 1 && i.localized_name !=
 
         // big nice item object
         return new DbItem
-        { 
+        {
             Updates = new List<DbUpdate> { upd },
             Name = i.localized_name,
             Price = i.cost,
             ItemType = itemType,
-            ImgUrl = $"http://cdn.dota2.com/apps/dota2/images/items/{i.name.Replace("item_", "")}_lg.png"        
+            ImgUrl = $"http://cdn.dota2.com/apps/dota2/images/items/{i.name.Replace("item_", "")}_lg.png"
         };
     }).ToDictionary(i => i.Name, i => i);
 

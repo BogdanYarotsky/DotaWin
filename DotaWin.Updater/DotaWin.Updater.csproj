@@ -8,6 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="ConsoleTables" Version="2.4.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.21.0" />
   </ItemGroup>
 
@@ -15,4 +21,11 @@
     <ProjectReference Include="..\DotaWin.Data\DotaWin.Data.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>DotaWin.Test</_Parameter1>
+			<!-- Unit tests of the assembly are now possible -->
+		</AssemblyAttribute>
+	</ItemGroup>
+	
 </Project>

@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 
-namespace DotaWin.Updater.Utilities
+namespace DotaWin.Updater.Services
 {
-    public class DotaAPI
+    internal class DotaAPI
     {
         private static readonly HttpClient _client = new();
         private readonly string _apiKey;
@@ -32,7 +32,7 @@ namespace DotaWin.Updater.Utilities
             return obj.result;
         }
 
-        private string GetAPILink(string query) 
+        private string GetAPILink(string query)
             => $"https://api.steampowered.com/IEconDOTA2_570/{query}/v1/?format=JSON&language=en_us&key={_apiKey}";
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
-using DotaWin.Updater.Utilities;
+using DotaWin.Updater.Services;
 using System.Linq;
 
 namespace DotaWin.Test

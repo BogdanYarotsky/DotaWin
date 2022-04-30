@@ -15,11 +15,11 @@ namespace DotaWin.Data.Models
 
         // Foreign Key
         public int HeroId { get; set; }
-        public DbHero Hero{ get; set; }
+        public DbHero Hero { get; set; }
 
         // Foreign Key
-        public int ItemId{ get; set; }
-        public DbItem Item{ get; set; }
+        public int ItemId { get; set; }
+        public DbItem Item { get; set; }
 
         // Foreign Key
         public int UpdateId { get; set; }

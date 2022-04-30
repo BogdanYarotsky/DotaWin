@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotaWin.Updater.Utilities
+namespace DotaWin.Updater.Services
 {
-    public sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
+    internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
     {
         private const string patchSelector = "#dota_react_root > div > div > div.patchnotespage_Header_2uAz0 > div.patchnotespage_NotesTitle_oyfUT";
         private const string cookiesBtnSelector = "body > div.fc-consent-root > div.fc-dialog-container > div.fc-dialog.fc-choice-dialog > div.fc-footer-buttons-container > div.fc-footer-buttons > button.fc-button.fc-cta-consent.fc-primary-button";
@@ -54,7 +54,7 @@ namespace DotaWin.Updater.Utilities
 
             // all info goes here
             var bag = new ConcurrentBag<DotabuffHero>();
-            var tasks = urls.Select(url => ExtractDotabuffHeroInfo(url));
+            var tasks = urls.Select(async url => bag.Add(await ExtractDotabuffHeroInfo(url)));
 
             foreach (var chunk in tasks.Chunk(5))
             {
@@ -72,7 +72,7 @@ namespace DotaWin.Updater.Utilities
                 if (r.Request.ResourceType == "image") await r.AbortAsync();
                 else await r.ContinueAsync();
             });
-            await page.GotoAsync(heroUrl.ToString(), new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded});
+            await page.GotoAsync(heroUrl.ToString(), new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded });
             var name = await page.Locator("h1").InnerTextAsync();
 
             // get winrate
@@ -92,6 +92,7 @@ namespace DotaWin.Updater.Utilities
                 var matches = int.Parse(await columns.Nth(2).GetAttributeAsync("data-value"));
                 if (matches < 9001) continue; // sample is too small
                 var winrate = double.Parse(await columns.Nth(3).GetAttributeAsync("data-value"));
+                winrate = Math.Round(winrate, 2);
                 items.Add(new DotabuffItem
                 {
                     Name = itemName,
@@ -112,8 +113,8 @@ namespace DotaWin.Updater.Utilities
 
         public async ValueTask DisposeAsync()
         {
-           await _browser.DisposeAsync();
-           _playwright.Dispose();
+            await _browser.DisposeAsync();
+            _playwright.Dispose();
         }
 
         public void Dispose()

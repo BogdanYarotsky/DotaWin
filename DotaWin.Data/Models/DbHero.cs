@@ -11,10 +11,10 @@ namespace DotaWin.Data.Models
         // Data
         public int Id { get; set; }
         public string Name { get; set; }
-        public string ImgUrl { get; set; } 
+        public string ImgUrl { get; set; }
         public double Winrate { get; set; }
         // Relationships
         public ICollection<DbUpdate> Updates { get; set; }
-        public ICollection<DbHeroItem> HeroItems { get; set; }   
+        public ICollection<DbHeroItem> HeroItems { get; set; }
     }
 }
