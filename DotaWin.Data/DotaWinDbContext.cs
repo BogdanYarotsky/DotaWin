@@ -9,5 +9,14 @@ public class DotaWinDbContext : DbContext
     public DbSet<DbHero> Heroes { get; set; }
     public DbSet<DbItem> Items { get; set; }
     public DbSet<DbHeroItem> HeroItems { get; set; }
-    public DotaWinDbContext(DbContextOptions options) : base(options) { }
+    //public DotaWinDbContext(DbContextOptions options) : base(options) { }
+    public DotaWinDbContext() 
+    {
+        Database.SetConnectionString("Host=localhost;Database=DotaWin;Username=postgres;Password=password1337");
+    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        optionsBuilder.UseNpgsql();
+    }
 }

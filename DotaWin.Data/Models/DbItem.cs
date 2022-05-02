@@ -8,8 +8,8 @@ public class DbItem
     }
 
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string ImgUrl { get; set; } = string.Empty;
+    public string Name { get; set; }
+    public string TechnicalName { get; set; }
     public Type ItemType { get; set; }
     public int Price { get; set; }
 

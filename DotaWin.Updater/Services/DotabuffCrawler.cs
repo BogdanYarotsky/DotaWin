@@ -17,7 +17,7 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
     private const string heroItemsListSelector = "body > div.container-outer.seemsgood > div.skin-container > div.container-inner.container-inner-content > div.content-inner > section > article > table > tbody > tr";
     private const string heroWinrateSelector = "body > div.container-outer.seemsgood > div.skin-container > div.container-inner.container-inner-content > div.header-content-container > div.header-content > div.header-content-secondary > dl:nth-child(2) > dd > span";
 
-    private readonly BrowserTypeLaunchPersistentContextOptions _options = new BrowserTypeLaunchPersistentContextOptions { Headless = false };
+    private readonly BrowserTypeLaunchPersistentContextOptions _options = new BrowserTypeLaunchPersistentContextOptions { Headless = true };
     private IPlaywright _playwright;
     private IBrowserContext _browser;
     private IPage _page;
@@ -45,7 +45,7 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
         // get links of every hero
         var heroUrl = new UriBuilder("https", "www.dotabuff.com");
         var urls = new List<Uri>();
-        for (var i = 0; i < 14; i++)
+        for (var i = 0; i < totalHeroes; i++)
         {
             var href = await heroIcons.Nth(i).GetAttributeAsync("href");
             heroUrl.Path = href + "/items";
@@ -72,6 +72,8 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
             if (r.Request.ResourceType == "image") await r.AbortAsync();
             else await r.ContinueAsync();
         });
+
+        Console.WriteLine("Extracting " + heroUrl);
         await page.GotoAsync(heroUrl.ToString(), new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded });
         var name = await page.Locator("h1").InnerTextAsync();
 

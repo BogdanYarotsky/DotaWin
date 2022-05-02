@@ -116,9 +116,6 @@ namespace DotaWin.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ImgUrl")
-                        .HasColumnType("text");
-
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
@@ -127,6 +124,9 @@ namespace DotaWin.Data.Migrations
 
                     b.Property<int>("Price")
                         .HasColumnType("integer");
+
+                    b.Property<string>("TechnicalName")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
