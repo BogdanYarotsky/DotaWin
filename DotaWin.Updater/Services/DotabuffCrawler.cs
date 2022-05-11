@@ -3,6 +3,7 @@ using Microsoft.Playwright;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
     private IPlaywright _playwright;
     private IBrowserContext _browser;
     private IPage _page;
+
     private DotabuffCrawler() { }
     private async Task<DotabuffCrawler> StartBrowserAsync()
     {
@@ -36,8 +38,9 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
         return await _page.Locator(patchSelector).InnerTextAsync();
     }
 
-    public async Task<List<DotabuffHero>> GetHeroesAsync()
+    public async Task<List<DotabuffHero>> GetHeroesAsync(int chunkSize)
     {
+        List<TimeSpan> _extractionTimes = new();
         await _page.GotoAsync("https://www.dotabuff.com/heroes");
         var heroIcons = _page.Locator(heroesListSelector);
         var totalHeroes = await heroIcons.CountAsync();
@@ -54,17 +57,18 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
 
         // all info goes here
         var bag = new ConcurrentBag<DotabuffHero>();
-        var tasks = urls.Select(async url => bag.Add(await ExtractDotabuffHeroInfo(url)));
+        var tasks = urls.Select(async url => bag.Add(await ExtractDotabuffHeroInfo(url, _extractionTimes)));
 
-        foreach (var chunk in tasks.Chunk(5))
+        foreach (var chunk in tasks.Chunk(chunkSize))
         {
             await Task.WhenAll(chunk);
         }
 
+        Console.WriteLine($"Average time to extract 1 hero: {_extractionTimes.Select(i => i.TotalSeconds).Average()} seconds");
         return bag.ToList();
     }
 
-    private async Task<DotabuffHero> ExtractDotabuffHeroInfo(Uri heroUrl)
+    private async Task<DotabuffHero> ExtractDotabuffHeroInfo(Uri heroUrl, List<TimeSpan> extractionTimes)
     {
         var page = await _browser.NewPageAsync();
         await page.RouteAsync("**/*", async r =>
@@ -73,9 +77,24 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
             else await r.ContinueAsync();
         });
 
+        var watch = new Stopwatch();
+        watch.Start();
         Console.WriteLine("Extracting " + heroUrl);
+
         await page.GotoAsync(heroUrl.ToString(), new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded });
-        var name = await page.Locator("h1").InnerTextAsync();
+        string name;
+
+        try 
+        {
+            name = await page.Locator("h1").InnerTextAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Oops, cought an exception" + ex.ToString());
+            Console.WriteLine("I assume it is because of the cookies check. Trying to solve.");
+            await page.Locator(cookiesBtnSelector).ClickAsync();
+            name = await page.Locator("h1").InnerTextAsync();
+        }
 
         // get winrate
         var heroWinrate = await page.Locator(heroWinrateSelector).InnerTextAsync();
@@ -104,7 +123,12 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
         }
 
         await page.CloseAsync();
-        return new DotabuffHero { HeroName = name.Replace("Items", "").Trim(), Winrate = double.Parse(heroWinrate), Items = items };
+
+        watch.Stop();
+        var heroName = name.Replace("Items", "").Trim();
+        Console.WriteLine($"Extracted {heroName} in {watch.Elapsed}");
+        extractionTimes.Add(watch.Elapsed);
+        return new DotabuffHero { HeroName = heroName, Winrate = double.Parse(heroWinrate), Items = items };
     }
 
     public static async Task<DotabuffCrawler> CreateAsync()

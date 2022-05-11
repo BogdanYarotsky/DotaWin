@@ -1,7 +1,9 @@
-﻿using DotaWin.Data;
+﻿using ConsoleTables;
+using DotaWin.Data;
 using DotaWin.Data.Models;
 using DotaWin.Updater.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace DotaWin.Updater.Services;
 
@@ -34,7 +36,7 @@ internal class DotaWinUpdater
         var itemsList = await _api.GetItemsAsync();
         var itemsDict = await ItemListToDbItemsMapAsync(itemsList, update);
         var crawler = await DotabuffCrawler.CreateAsync();
-        var heroes = await crawler.GetHeroesAsync();
+        List<DotabuffHero> heroes = await crawler.GetHeroesAsync(chunkSize: 6); 
         update.Heroes = MergeHeroesAndItems(heroes, itemsDict, update);
         await _db.AddAsync(update);
 

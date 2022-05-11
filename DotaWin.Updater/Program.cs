@@ -4,13 +4,25 @@ using DotaWin.Data.Models;
 using DotaWin.Updater.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-
-
-var updater = new DotaWinUpdater("B479F4855E8EC7C228DF9045FA77978B");
-var updateResult = await updater.RunDailyUpdate();
-Console.WriteLine(updateResult);
+using System.Diagnostics;
 
 using var db = new DotaWinDbContext();
+//db.RemoveRange(db.DailyUpdates);
+//db.SaveChanges();
+//return;
+
+var updater = new DotaWinUpdater("B479F4855E8EC7C228DF9045FA77978B");
+
+var filestream = new FileStream("out.txt", FileMode.Create);
+var streamwriter = new StreamWriter(filestream);
+streamwriter.AutoFlush = true;
+Console.SetOut(streamwriter);
+Console.SetError(streamwriter);
+
+Console.WriteLine("Starting the tests");
+var updateResult = await updater.RunDailyUpdate();
+
+
 var abbadon = await db.Heroes
     .AsNoTracking()
     .Where(h => h.Name == "Pugna")
