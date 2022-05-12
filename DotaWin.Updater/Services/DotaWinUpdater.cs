@@ -36,7 +36,11 @@ internal class DotaWinUpdater
         var itemsList = await _api.GetItemsAsync();
         var itemsDict = await ItemListToDbItemsMapAsync(itemsList, update);
         var crawler = await DotabuffCrawler.CreateAsync();
-        List<DotabuffHero> heroes = await crawler.GetHeroesAsync(chunkSize: 6); 
+        var watch = new Stopwatch();
+        watch.Start();
+        List<DotabuffHero> heroes = await crawler.GetHeroesAsync(); 
+        watch.Stop();
+        Console.WriteLine("Got heroes in " + watch.Elapsed.TotalSeconds + " seconds");
         update.Heroes = MergeHeroesAndItems(heroes, itemsDict, update);
         await _db.AddAsync(update);
 
@@ -62,7 +66,7 @@ internal class DotaWinUpdater
                 Name = hero.HeroName,
                 Winrate = hero.Winrate,
                 HeroItems = new List<DbHeroItem>(),
-                Updates = new List<DbUpdate> { upd }
+                Update = upd
             };
 
             foreach (var item in hero.Items)

@@ -14,6 +14,8 @@ public class DotaWinDbContext : DbContext
     {
         Database.SetConnectionString("Host=localhost;Database=DotaWin;Username=postgres;Password=password1337");
     }
+
+    public DotaWinDbContext(DbContextOptions options) : base(options) { }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

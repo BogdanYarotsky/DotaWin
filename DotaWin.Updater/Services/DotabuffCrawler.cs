@@ -22,6 +22,7 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
     private IPlaywright _playwright;
     private IBrowserContext _browser;
     private IPage _page;
+    private readonly int _chunkSize = 7;
 
     private DotabuffCrawler() { }
     private async Task<DotabuffCrawler> StartBrowserAsync()
@@ -38,7 +39,7 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
         return await _page.Locator(patchSelector).InnerTextAsync();
     }
 
-    public async Task<List<DotabuffHero>> GetHeroesAsync(int chunkSize)
+    public async Task<List<DotabuffHero>> GetHeroesAsync()
     {
         List<TimeSpan> _extractionTimes = new();
         await _page.GotoAsync("https://www.dotabuff.com/heroes");
@@ -59,7 +60,7 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
         var bag = new ConcurrentBag<DotabuffHero>();
         var tasks = urls.Select(async url => bag.Add(await ExtractDotabuffHeroInfo(url, _extractionTimes)));
 
-        foreach (var chunk in tasks.Chunk(chunkSize))
+        foreach (var chunk in tasks.Chunk(_chunkSize))
         {
             await Task.WhenAll(chunk);
         }
@@ -70,6 +71,9 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
 
     private async Task<DotabuffHero> ExtractDotabuffHeroInfo(Uri heroUrl, List<TimeSpan> extractionTimes)
     {
+        var watch = new Stopwatch();
+        watch.Start();
+
         var page = await _browser.NewPageAsync();
         await page.RouteAsync("**/*", async r =>
         {
@@ -77,8 +81,6 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
             else await r.ContinueAsync();
         });
 
-        var watch = new Stopwatch();
-        watch.Start();
         Console.WriteLine("Extracting " + heroUrl);
 
         await page.GotoAsync(heroUrl.ToString(), new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded });
@@ -92,6 +94,8 @@ internal sealed class DotabuffCrawler : IAsyncDisposable, IDisposable
         {
             Console.WriteLine("Oops, cought an exception" + ex.ToString());
             Console.WriteLine("I assume it is because of the cookies check. Trying to solve.");
+            watch.Stop(); 
+            Console.WriteLine("Exact duration in seconds: " + watch.Elapsed.TotalSeconds);
             await page.Locator(cookiesBtnSelector).ClickAsync();
             name = await page.Locator("h1").InnerTextAsync();
         }

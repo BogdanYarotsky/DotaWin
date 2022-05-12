@@ -22,21 +22,6 @@ namespace DotaWin.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("DbHeroDbUpdate", b =>
-                {
-                    b.Property<int>("HeroesId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UpdatesId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("HeroesId", "UpdatesId");
-
-                    b.HasIndex("UpdatesId");
-
-                    b.ToTable("DbHeroDbUpdate");
-                });
-
             modelBuilder.Entity("DbItemDbUpdate", b =>
                 {
                     b.Property<int>("ItemsId")
@@ -66,10 +51,15 @@ namespace DotaWin.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<int?>("UpdateId")
+                        .HasColumnType("integer");
+
                     b.Property<double>("Winrate")
                         .HasColumnType("double precision");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UpdateId");
 
                     b.ToTable("Heroes");
                 });
@@ -142,7 +132,7 @@ namespace DotaWin.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Patch")
                         .HasColumnType("text");
@@ -150,21 +140,6 @@ namespace DotaWin.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DailyUpdates");
-                });
-
-            modelBuilder.Entity("DbHeroDbUpdate", b =>
-                {
-                    b.HasOne("DotaWin.Data.Models.DbHero", null)
-                        .WithMany()
-                        .HasForeignKey("HeroesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DotaWin.Data.Models.DbUpdate", null)
-                        .WithMany()
-                        .HasForeignKey("UpdatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("DbItemDbUpdate", b =>
@@ -180,6 +155,15 @@ namespace DotaWin.Data.Migrations
                         .HasForeignKey("UpdatesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DotaWin.Data.Models.DbHero", b =>
+                {
+                    b.HasOne("DotaWin.Data.Models.DbUpdate", "Update")
+                        .WithMany("Heroes")
+                        .HasForeignKey("UpdateId");
+
+                    b.Navigation("Update");
                 });
 
             modelBuilder.Entity("DotaWin.Data.Models.DbHeroItem", b =>
@@ -222,6 +206,8 @@ namespace DotaWin.Data.Migrations
             modelBuilder.Entity("DotaWin.Data.Models.DbUpdate", b =>
                 {
                     b.Navigation("HeroItems");
+
+                    b.Navigation("Heroes");
                 });
 #pragma warning restore 612, 618
         }

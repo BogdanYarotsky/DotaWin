@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DotaWin.Data.Migrations
 {
-    public partial class init : Migration
+    public partial class correct : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,27 +16,12 @@ namespace DotaWin.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Patch = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DailyUpdates", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Heroes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    ImgUrl = table.Column<string>(type: "text", nullable: true),
-                    Winrate = table.Column<double>(type: "double precision", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Heroes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,27 +41,24 @@ namespace DotaWin.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DbHeroDbUpdate",
+                name: "Heroes",
                 columns: table => new
                 {
-                    HeroesId = table.Column<int>(type: "integer", nullable: false),
-                    UpdatesId = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    ImgUrl = table.Column<string>(type: "text", nullable: true),
+                    Winrate = table.Column<double>(type: "double precision", nullable: false),
+                    UpdateId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DbHeroDbUpdate", x => new { x.HeroesId, x.UpdatesId });
+                    table.PrimaryKey("PK_Heroes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DbHeroDbUpdate_DailyUpdates_UpdatesId",
-                        column: x => x.UpdatesId,
+                        name: "FK_Heroes_DailyUpdates_UpdateId",
+                        column: x => x.UpdateId,
                         principalTable: "DailyUpdates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DbHeroDbUpdate_Heroes_HeroesId",
-                        column: x => x.HeroesId,
-                        principalTable: "Heroes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -139,14 +121,14 @@ namespace DotaWin.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_DbHeroDbUpdate_UpdatesId",
-                table: "DbHeroDbUpdate",
-                column: "UpdatesId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DbItemDbUpdate_UpdatesId",
                 table: "DbItemDbUpdate",
                 column: "UpdatesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Heroes_UpdateId",
+                table: "Heroes",
+                column: "UpdateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HeroItems_HeroId",
@@ -167,22 +149,19 @@ namespace DotaWin.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DbHeroDbUpdate");
-
-            migrationBuilder.DropTable(
                 name: "DbItemDbUpdate");
 
             migrationBuilder.DropTable(
                 name: "HeroItems");
 
             migrationBuilder.DropTable(
-                name: "DailyUpdates");
-
-            migrationBuilder.DropTable(
                 name: "Heroes");
 
             migrationBuilder.DropTable(
                 name: "Items");
+
+            migrationBuilder.DropTable(
+                name: "DailyUpdates");
         }
     }
 }

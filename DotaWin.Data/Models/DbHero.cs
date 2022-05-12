@@ -14,7 +14,7 @@ namespace DotaWin.Data.Models
         public string ImgUrl { get; set; }
         public double Winrate { get; set; }
         // Relationships
-        public ICollection<DbUpdate> Updates { get; set; }
+        public DbUpdate Update { get; set; }
         public ICollection<DbHeroItem> HeroItems { get; set; }
     }
 }
