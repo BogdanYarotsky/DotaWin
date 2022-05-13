@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotaWin.Test", "DotaWin.Tes
 		{5B3749DC-D1E6-4016-AAF0-358959853683} = {5B3749DC-D1E6-4016-AAF0-358959853683}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.API", "DotaWin.API\DotaWin.API.csproj", "{E4258812-8FB9-4515-98AC-D0BA89A04325}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.API", "DotaWin.API\DotaWin.API.csproj", "{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,10 +38,10 @@ Global
 		{C44B4504-5EA7-433E-A43E-F4F3C4EE432D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C44B4504-5EA7-433E-A43E-F4F3C4EE432D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C44B4504-5EA7-433E-A43E-F4F3C4EE432D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E4258812-8FB9-4515-98AC-D0BA89A04325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4258812-8FB9-4515-98AC-D0BA89A04325}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E4258812-8FB9-4515-98AC-D0BA89A04325}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4258812-8FB9-4515-98AC-D0BA89A04325}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
