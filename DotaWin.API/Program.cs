@@ -1,3 +1,5 @@
+using DotaWin.API.Interfaces;
+using DotaWin.API.Services;
 using DotaWin.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DotaWinDbContext>(opt => opt.UseNpgsql("Host=localhost;Database=DotaWin;Username=postgres;Password=password1337"));
+builder.Services.AddScoped<IHeroesService, HeroesService>();
 
 var app = builder.Build();
 

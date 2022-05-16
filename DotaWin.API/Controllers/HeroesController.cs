@@ -1,4 +1,6 @@
-﻿using DotaWin.API.Services;
+﻿using DotaWin.API.Interfaces;
+using DotaWin.API.Models;
+using DotaWin.API.Services;
 using DotaWin.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,8 +18,8 @@ public class HeroesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<DotaWinHero>>> GetHeroes()
-    => await _heroesService.GetHeroes();
+    public async Task<ActionResult<DotaWinHero[]>> GetHeroes([FromServices] IHeroesService heroService)
+        => await heroService.GetHeroes();
 
     [HttpGet("{id}")]
     public async Task<ActionResult<DotaWinHero>> GetHero(string id)
@@ -26,5 +28,5 @@ public class HeroesController : ControllerBase
         if (hero == null) return NotFound();
         return hero;
     }
-        
+
 }

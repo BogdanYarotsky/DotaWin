@@ -1,63 +1,69 @@
-﻿using DotaWin.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using DotaWin.API.Interfaces;
+using DotaWin.API.Models;
+using DotaWin.API.Utilities;
+using DotaWin.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 
 namespace DotaWin.API.Services;
 
-public record DotaWinHeroItem(string Name, int Matches, double AddedWinrate, int WinratePer1000Gold);
-public record DotaWinHero(string Name, double Winrate, List<DotaWinHeroItem> Items);
+//public record DotaWinHeroItem(string Name, int Matches, double AddedWinrate, int WinratePer1000Gold);
+//public record DotaWinHero(string Name, double Winrate, List<DotaWinHeroItem> Items);
 
-internal class HeroesService
+internal class HeroesService : IHeroesService
 {
-    private readonly DotaWinDbContext db;
+    private readonly DotaWinDbContext _db;
 
     public HeroesService(DotaWinDbContext db)
     {
-        this.db = db;
+        _db = db;
     }
 
-    // Get Hero + Items
     public async Task<DotaWinHero?> GetHeroInfo(string name)
     {
-        var updId = db.DailyUpdates
+        var updId = await _db.DailyUpdates
             .AsNoTracking()
             .OrderByDescending(x => x.Date)
             .Select(x => x.Id)
-            .First();
+            .FirstAsync();
 
-        if (name.Equals("Anti-Mage", StringComparison.OrdinalIgnoreCase))
-        {
-            name = "Anti-Mage";
-        }
-        else 
-        {
-            name = RouteNameToHeroName(name);
-        }
+        name = name.Equals("Anti-Mage", StringComparison.OrdinalIgnoreCase) ?
+            "Anti-Mage" : RouteNameToHeroName(name);
 
-        return await db.Heroes
+        return await _db.Heroes
             .AsNoTracking()
             .Where(hero => hero.Update.Id == updId && hero.Name == name)
-            .Select(hero => new DotaWinHero(hero.Name, hero.Winrate, new List<DotaWinHeroItem>()))
+            .Select(hero => new DotaWinHero
+            {
+                Name = hero.Name,
+                Winrate = hero.Winrate,
+                Items = hero.HeroItems.Select(i => new DotaWinItem { Id = i.Item.Name }).ToList(),
+            })
             .FirstOrDefaultAsync();
     }
 
-    internal Task<ActionResult<List<DotaWinHero>>> GetHeroes()
+    public async Task<DotaWinHero[]> GetHeroes()
     {
-        throw new NotImplementedException();
+        var updId = await _db.DailyUpdates
+            .AsNoTracking()
+            .OrderByDescending(x => x.Date)
+            .Select(x => x.Id)
+            .FirstAsync();
+
+        var heroes = await _db.Heroes
+            .Include(h => h.HeroItems)
+            .Where(hero => hero.Update.Id == updId)
+            .OrderByDescending(hero => hero.Winrate)
+            .Select(hero => new DotaWinHero
+            {
+                Name = hero.Name,
+                Winrate = hero.Winrate
+            }).ToArrayAsync();
+
+        return heroes;
     }
 
-    private string RouteNameToHeroName(string routeName) => routeName.ToLower().Replace('-', ' ').ToTitleCase();
-
-    // Get Hero list
-
+    private static string RouteNameToHeroName(string routeName) => routeName.ToLower().Replace('-', ' ').ToTitleCase();
 }
 
 
-static class Utilities
-{
-    public static string ToTitleCase(this string title)
-    {
-        return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title.ToLower());
-    }
-}
+
