@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotaWin.Data", "DotaWin.Data\DotaWin.Data.csproj", "{5B3749DC-D1E6-4016-AAF0-358959853683}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotaWin.Updater", "DotaWin.Updater\DotaWin.Updater.csproj", "{598D964C-619A-4290-9DB1-26C1DC6C696C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EDC382A-58EB-4903-AE8C-1FA0DB5B065C}"
@@ -15,10 +13,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotaWin.Test", "DotaWin.Test\DotaWin.Test.csproj", "{C44B4504-5EA7-433E-A43E-F4F3C4EE432D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{598D964C-619A-4290-9DB1-26C1DC6C696C} = {598D964C-619A-4290-9DB1-26C1DC6C696C}
-		{5B3749DC-D1E6-4016-AAF0-358959853683} = {5B3749DC-D1E6-4016-AAF0-358959853683}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.API", "DotaWin.API\DotaWin.API.csproj", "{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotaWin.EngineAPI", "DotaWin.API\DotaWin.EngineAPI.csproj", "{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotaWin.DataAPI", "DotaWin.DataAPI\DotaWin.DataAPI.csproj", "{53BD0513-0FE8-4A76-9841-2FC90FF5E2D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5B3749DC-D1E6-4016-AAF0-358959853683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B3749DC-D1E6-4016-AAF0-358959853683}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B3749DC-D1E6-4016-AAF0-358959853683}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B3749DC-D1E6-4016-AAF0-358959853683}.Release|Any CPU.Build.0 = Release|Any CPU
 		{598D964C-619A-4290-9DB1-26C1DC6C696C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{598D964C-619A-4290-9DB1-26C1DC6C696C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{598D964C-619A-4290-9DB1-26C1DC6C696C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -42,6 +37,10 @@ Global
 		{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BA9D4E4-9B25-43A2-85A8-CDEC3AA44B6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53BD0513-0FE8-4A76-9841-2FC90FF5E2D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53BD0513-0FE8-4A76-9841-2FC90FF5E2D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53BD0513-0FE8-4A76-9841-2FC90FF5E2D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53BD0513-0FE8-4A76-9841-2FC90FF5E2D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,7 @@
 ﻿using ConsoleTables;
 using DotaWin.Data;
 using DotaWin.Data.Models;
+using DotaWin.DataAPI;
 using DotaWin.Updater.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -18,9 +19,9 @@ internal class DotaWinUpdater
         Success, UpToDate, Fail
     }
 
-    public DotaWinUpdater(string apiKey)
+    public DotaWinUpdater(string apiKey, DbContextOptions<DotaWinDbContext> options)
     {
-        _db = new DotaWinDbContext();
+        _db = new DotaWinDbContext(options);
         _api = new DotaAPI(apiKey);
     }
 
@@ -38,7 +39,7 @@ internal class DotaWinUpdater
         var crawler = await DotabuffCrawler.CreateAsync();
         var watch = new Stopwatch();
         watch.Start();
-        List<DotabuffHero> heroes = await crawler.GetHeroesAsync(); 
+        List<DotabuffHero> heroes = await crawler.GetHeroesAsync();
         watch.Stop();
         Console.WriteLine("Got heroes in " + watch.Elapsed.TotalSeconds + " seconds");
         update.Heroes = MergeHeroesAndItems(heroes, itemsDict, update);
@@ -64,10 +65,12 @@ internal class DotaWinUpdater
             var dbHero = new DbHero
             {
                 Name = hero.HeroName,
-                Winrate = hero.Winrate,
+                Winrates = new Dictionary<string, double>(),
                 HeroItems = new List<DbHeroItem>(),
                 Update = upd
             };
+
+            dbHero.Winrates.Add("Winrate", hero.Winrate);
 
             foreach (var item in hero.Items)
             {
@@ -117,7 +120,6 @@ internal class DotaWinUpdater
 
         return new DbItem
         {
-            Updates = new List<DbUpdate> { upd },
             Name = i.localized_name,
             Price = i.cost,
             ItemType = itemType,

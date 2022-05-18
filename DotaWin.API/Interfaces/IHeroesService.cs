@@ -5,6 +5,6 @@ namespace DotaWin.API.Interfaces;
 
 public interface IHeroesService
 {
-    public Task<DotaWinHero?> GetHeroInfo(string name);
-    public Task<DotaWinHero[]> GetHeroes();
+    public Task<DotaWinHero?> Get(string name);
+    public Task<DotaWinHero[]> GetAll();
 }

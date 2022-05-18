@@ -2,6 +2,7 @@
 using DotaWin.API.Models;
 using DotaWin.API.Utilities;
 using DotaWin.Data;
+using DotaWin.DataAPI;
 using Microsoft.EntityFrameworkCore;
 
 namespace DotaWin.API.Services;
@@ -18,7 +19,7 @@ internal class HeroesService : IHeroesService
         _db = db;
     }
 
-    public async Task<DotaWinHero?> GetHeroInfo(string name)
+    public async Task<DotaWinHero?> Get(string name)
     {
         var updId = await _db.DailyUpdates
             .AsNoTracking()
@@ -35,13 +36,13 @@ internal class HeroesService : IHeroesService
             .Select(hero => new DotaWinHero
             {
                 Name = hero.Name,
-                Winrate = hero.Winrate,
+                Winrate = hero.Winrates.First().Value,
                 Items = hero.HeroItems.Select(i => new DotaWinItem { Id = i.Item.Name }).ToList(),
             })
             .FirstOrDefaultAsync();
     }
 
-    public async Task<DotaWinHero[]> GetHeroes()
+    public async Task<DotaWinHero[]> GetAll()
     {
         var updId = await _db.DailyUpdates
             .AsNoTracking()
@@ -52,11 +53,11 @@ internal class HeroesService : IHeroesService
         var heroes = await _db.Heroes
             .Include(h => h.HeroItems)
             .Where(hero => hero.Update.Id == updId)
-            .OrderByDescending(hero => hero.Winrate)
+            .OrderByDescending(hero => hero.Winrates.First().Value)
             .Select(hero => new DotaWinHero
             {
                 Name = hero.Name,
-                Winrate = hero.Winrate
+                Winrate = hero.Winrates.First().Value
             }).ToArrayAsync();
 
         return heroes;

@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DotaWin.Data\DotaWin.Data.csproj" />
     <ProjectReference Include="..\DotaWin.Updater\DotaWin.Updater.csproj" />
   </ItemGroup>
 
