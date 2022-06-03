@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotaWin.Data.Models
+namespace DotaWin.DataLayer.Models
 {
     public class DbUpdate
     {

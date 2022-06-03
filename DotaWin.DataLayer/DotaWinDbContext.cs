@@ -1,7 +1,7 @@
-﻿using DotaWin.Data.Models;
+﻿using DotaWin.DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DotaWin.DataAPI;
+namespace DotaWin.DataLayer;
 
 public class DotaWinDbContext : DbContext
 {

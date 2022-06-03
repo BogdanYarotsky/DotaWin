@@ -1,14 +1,9 @@
 ﻿using DotaWin.API.Interfaces;
 using DotaWin.API.Models;
 using DotaWin.API.Utilities;
-using DotaWin.Data;
-using DotaWin.DataAPI;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace DotaWin.API.Services;
-
-//public record DotaWinHeroItem(string Name, int Matches, double AddedWinrate, int WinratePer1000Gold);
-//public record DotaWinHero(string Name, double Winrate, List<DotaWinHeroItem> Items);
 
 internal class HeroesService : IHeroesService
 {

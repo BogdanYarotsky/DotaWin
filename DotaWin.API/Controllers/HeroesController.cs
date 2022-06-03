@@ -1,9 +1,5 @@
 ﻿using DotaWin.API.Interfaces;
 using DotaWin.API.Models;
-using DotaWin.API.Services;
-using DotaWin.Data;
-using DotaWin.Data.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotaWin.API.Controllers;

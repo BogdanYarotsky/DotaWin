@@ -1,7 +1,6 @@
 ﻿using ConsoleTables;
-using DotaWin.Data;
-using DotaWin.Data.Models;
-using DotaWin.DataAPI;
+using DotaWin.DataLayer;
+using DotaWin.DataLayer.Models;
 using DotaWin.Updater.Services;
 using Microsoft.EntityFrameworkCore;
 

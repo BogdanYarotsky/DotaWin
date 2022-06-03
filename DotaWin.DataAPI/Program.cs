@@ -1,11 +1,11 @@
-using DotaWin.DataAPI;
+using DotaWin.DataLayer;
 using Microsoft.EntityFrameworkCore;
 using DotaWin.DataAPI.Utilities;
 
 // Connect to DB
 var builder = WebApplication.CreateBuilder(args);
 var connString = builder.Configuration.GetConnectionString("DotaWinDatabase");
-builder.Services.AddDbContext<DotaWinDbContext>(opt => opt.UseNpgsql(connString));
+builder.Services.AddDbContext<DotaWinDbContext>(opt => opt.UseNpgsql(connString.Replace("localhost", "host.docker.internal")));
 
 // Add services
 builder.Services.AddControllers();

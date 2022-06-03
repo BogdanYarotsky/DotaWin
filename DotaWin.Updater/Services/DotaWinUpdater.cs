@@ -1,7 +1,6 @@
 ﻿using ConsoleTables;
-using DotaWin.Data;
-using DotaWin.Data.Models;
-using DotaWin.DataAPI;
+using DotaWin.DataLayer;
+using DotaWin.DataLayer.Models;
 using DotaWin.Updater.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -65,12 +64,12 @@ internal class DotaWinUpdater
             var dbHero = new DbHero
             {
                 Name = hero.HeroName,
-                Winrates = new Dictionary<string, double>(),
+                Winrates = new List<DbHeroWinrate>(),
                 HeroItems = new List<DbHeroItem>(),
                 Update = upd
             };
 
-            dbHero.Winrates.Add("Winrate", hero.Winrate);
+            dbHero.Winrates.Add(new DbHeroWinrate { Skill = SkillLevel.Normal, Value = hero.Winrate });
 
             foreach (var item in hero.Items)
             {

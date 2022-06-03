@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 namespace DotaWin.DataAPI.Utilities;
+
 public static class StartupExtensions
 {
     public static IHost RunDatabaseMigrations<T>(this IHost webHost) where T : DbContext

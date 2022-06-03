@@ -1,4 +1,4 @@
-﻿namespace DotaWin.Data.Models;
+﻿namespace DotaWin.DataLayer.Models;
 
 public class DbItem
 {

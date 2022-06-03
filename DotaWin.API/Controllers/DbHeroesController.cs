@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DotaWin.DataAPI;
-using DotaWin.Data.Models;
+using DotaWin.DataLayer;
+using DotaWin.DataLayer.Models;
 
 namespace DotaWin.API.Controllers
 {
@@ -25,10 +20,10 @@ namespace DotaWin.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DbHero>>> GetHeroes()
         {
-          if (_context.Heroes == null)
-          {
-              return NotFound();
-          }
+            if (_context.Heroes == null)
+            {
+                return NotFound();
+            }
             return await _context.Heroes.ToListAsync();
         }
 
@@ -36,10 +31,10 @@ namespace DotaWin.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<DbHero>> GetDbHero(int id)
         {
-          if (_context.Heroes == null)
-          {
-              return NotFound();
-          }
+            if (_context.Heroes == null)
+            {
+                return NotFound();
+            }
             var dbHero = await _context.Heroes.FindAsync(id);
 
             if (dbHero == null)
@@ -86,10 +81,10 @@ namespace DotaWin.API.Controllers
         [HttpPost]
         public async Task<ActionResult<DbHero>> PostDbHero(DbHero dbHero)
         {
-          if (_context.Heroes == null)
-          {
-              return Problem("Entity set 'DotaWinDbContext.Heroes'  is null.");
-          }
+            if (_context.Heroes == null)
+            {
+                return Problem("Entity set 'DotaWinDbContext.Heroes'  is null.");
+            }
             _context.Heroes.Add(dbHero);
             await _context.SaveChangesAsync();
 
